@@ -9,7 +9,7 @@ Study Programme: **Computer Science**
 
 Year: **2019 - 2022**
 
-Supervisor: **Milada Omachelová**
+Supervisor: **Mgr. Milada Omachelová, PhD. et PhD.**
 
 Institution: **Faculty of Informatics and Information Technologies, Slovak University of Technology in Bratislava**
 
@@ -21,12 +21,17 @@ Full text: [Central Register of Theses (CRZP)](https://opac.crzp.sk/?fn=detailBi
 ## Contents
 
 1. [Introduction](#introduction)
-2. [Features](#features)
-3. [Problem types](#problem-types)
-4. [Example](#example)
-5. [Running the generator](#running-the-generator)
-6. [How it works](#how-it-works)
-7. [Credits](#credits)
+2. [Demo](#demo)
+3. [Motivation](#motivation)
+4. [Features](#features)
+5. [Problem types](#problem-types)
+6. [Example](#example)
+7. [Running the generator](#running-the-generator)
+8. [Generating problems with nice numbers](#generating-problems-with-nice-numbers)
+9. [How it works](#how-it-works)
+10. [Testing](#testing)
+11. [Future work](#future-work)
+12. [Credits](#credits)
 
 
 ## Introduction
@@ -44,6 +49,36 @@ From the thesis abstract:
 > Finally, we describe the strengths and weaknesses of the final version of the generator.
 
 The interface and all generated text are in Slovak, the language the course was taught in.
+
+
+## Demo
+
+A 50-second walkthrough of the finished app: building a test in teacher mode, then generating a problem in student mode with its solution steps and plot.
+
+[![Demo video: a generated tangent problem with its step-by-step solution](./assets/demo-poster.png)](./assets/demo.mp4)
+
+*Click the image to play the video ([`assets/demo.mp4`](./assets/demo.mp4)).*
+
+
+## Motivation
+
+Each generated problem has four parts: the **problem statement**, a **worked solution**, a **plot** and the **answer**.
+The generator had three requirements:
+
+- **Nice numbers.** Results should be small natural numbers, square roots of natural numbers or, at worst, simple fractions in lowest terms.
+- **Understandable solutions** that anyone can follow line by line.
+- **An intuitive interface** for both students and teachers.
+
+There were several reasons to build a new generator:
+
+- Textbooks and websites have few problems that do not repeat.
+- Those problems often come without a worked solution.
+- Teachers also need a quick way to put together tests.
+- Very few similar applications exist.
+
+Three existing tools were analysed: [Wolfram Problem Generator](https://www.wolframalpha.com/problem-generator/), [Symbolab](https://www.symbolab.com/) and [QuickMath](https://quickmath.com/).
+Wolfram Problem Generator came out best: it covers six areas of mathematics in three difficulty levels, keeps a history of solved problems, walks through solutions step by step with a short comment on each step, and exports problem sheets to PDF.
+However, some of its features are only in the paid Pro version, and none of these tools offers problems on conic sections.
 
 
 ## Features
@@ -108,6 +143,43 @@ Each problem type is also a plain function that can be called on its own. It ret
 {problem, steps, graph, answer} = ellipseType7["hard"];
 ellipseType1["easy", True]  (* True prints debug output *)
 ```
+
+
+## Generating problems with nice numbers
+
+Picking random numbers and solving the problem rarely gives clean results, so each of the ten problem types uses one of three methods.
+
+### Method 1: direct solution (types 1, 3, 4)
+
+Used where the solution only adds, subtracts, multiplies and raises to powers, so no fractions or decimals can appear.
+
+1. Pick random integers for $a$, $b$, $m$ and $n$ from predefined ranges.
+2. Put them into the problem statement.
+3. Solve the problem step by step and record every step.
+
+### Method 2: inverse solution (types 2, 8)
+
+For example, type 2 asks for the centre and semi-axes of an ellipse given by its general equation. The method starts from the answer:
+
+1. Pick random integers for the centre and the semi-axes.
+2. Put them into the centre form of the ellipse.
+3. Rewrite it into the general form, recording the intermediate steps.
+4. Reverse the order of the steps and replace each operation with its inverse (`+5` becomes `-5`, `*2` becomes `/2`).
+
+The general form becomes the problem statement and the reversed steps become the solution.
+
+### Method 3: pre-generated solutions (types 5, 6, 7, 9, 10)
+
+Type 10 asks for the two tangents to an ellipse through a point $M$ outside it. For a random point the tangent coefficients are almost never nice numbers, so the search runs the other way:
+
+1. Generate every ellipse centred at [0; 0] with semi-axes $0 < a < b \le \text{MAX}$.
+2. Search them by brute force for parameters that give nice results, and store those.
+3. When generating a problem, pick one stored case at random.
+4. Apply extra transformations to multiply the number of distinct problems: mirror all points across the line $x = y$, and shift all points by a random integer vector.
+
+![The same tangent problem: the stored case, mirrored across x = y, then shifted by an integer vector](./assets/tangent-transformations.png)
+
+*One stored type 10 case (left), mirrored across $x = y$ (middle), then shifted by an integer vector (right). Both transformations keep every coordinate an integer.*
 
 
 ## How it works
@@ -262,8 +334,23 @@ Button[Style["Generuj nové zadanie", FontWeight -> Bold, FontSize -> 14],
 ```
 
 
+## Testing
+
+After implementing all ten generators, I tested the code for errors and edge cases, so that no generated problem could crash the program.
+The generator was then tried out by students in their final year of secondary school. The testing focused on two questions: whether they could find their way around the app, and how closely their own hand calculations matched the generated solutions.
+Most differences appeared in problems that can be solved in more than one way.
+
+
+## Future work
+
+- More problem types on the ellipse, for example about its foci or its major and minor vertices.
+- Multiple-choice questions.
+- Merging this generator with the generators for other conic sections and areas of mathematics into one multi-generator.
+
+
 ## Credits
 
 The ten problem generators, their solution steps and plots are my work.
-The graphical interface is adapted from the bachelor's thesis of **Kristína Čopíková** (FIIT STU), and the test generation and export from the bachelor's thesis of **Róbert Szabó** (FIIT STU).
+The interface design was shared by all bachelor's theses on similar problem generators, so that they look the same; it comes from **Erika Václavová** and was adapted for ellipse problems.
+Its implementation is adapted from the bachelor's thesis of **Kristína Čopíková** (FIIT STU), and the test generation and export from the bachelor's thesis of **Róbert Szabó** (FIIT STU).
 The changes made to both are listed in the *UI* section of the notebook.
