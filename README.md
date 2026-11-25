@@ -15,6 +15,8 @@ Institution: **Faculty of Informatics and Information Technologies, Slovak Unive
 
 Full text: [Central Register of Theses (CRZP)](https://opac.crzp.sk/?fn=detailBiblioForm&sid=4F55101800366CEF5AFDC4DB109A) (in Slovak)
 
+Case study: [akoskappel.dev/projects/conic-sections-generator](https://akoskappel.dev/projects/conic-sections-generator)
+
 ![Generated practice problem with a step-by-step solution and a plot](./assets/practice-problem.png)
 
 
