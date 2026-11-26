@@ -34,6 +34,7 @@ Case study: [akoskappel.dev/projects/conic-sections-generator](https://akoskappe
 10. [Testing](#testing)
 11. [Future work](#future-work)
 12. [Credits](#credits)
+13. [Licence](#licence)
 
 
 ## Introduction
@@ -356,3 +357,8 @@ The ten problem generators, their solution steps and plots are my work.
 The interface design was shared by all bachelor's theses on similar problem generators, so that they look the same; it comes from **Erika Václavová** and was adapted for ellipse problems.
 Its implementation is adapted from the bachelor's thesis of **Kristína Čopíková** (FIIT STU), and the test generation and export from the bachelor's thesis of **Róbert Szabó** (FIIT STU).
 The changes made to both are listed in the *UI* section of the notebook.
+
+
+## Licence
+
+[MIT](LICENSE). The adapted interface parts listed under [Credits](#credits) are included with their authors' permission.
